@@ -598,7 +598,7 @@ def checkIfFainted():
         drawMessageBox(p1Primary['Name'] + ' fainted!', '')
         pausePrompt(200)
 
-        if p1Backup['CurrentHP'] == 0:
+        if p1Backup['CurrentHP'] <= 0:
             # Player loses, AI wins
             print('p1 loses')
             win = False
@@ -636,7 +636,7 @@ def checkIfFainted():
             ##pygame.time.delay(400)
             sleep(0.2)
 
-    elif p2Primary['CurrentHP'] == 0:
+    elif p2Primary['CurrentHP'] <= 0:
         fainted = True
         print('p2 primary mon fainted')
 
@@ -899,7 +899,7 @@ def resetGame():
 
     # Reset global variables
 
-    global p1Primary, p1Backup, p2Primary, p2Backup, timesSwapped
+    global p1Primary, p1Backup, p2Primary, p2Backup, newStats, timesSwapped
     p1Primary = {}
     p1Backup = {}
     p2Primary = {}
@@ -907,6 +907,7 @@ def resetGame():
     newStats = {'Damage': 0, 'Turns': 0}
     timesSwapped = 0
 
+    print('newStats:', newStats)
     titleScreen()
 
 def resultsScreen(win):
