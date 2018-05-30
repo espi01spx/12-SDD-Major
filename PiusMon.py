@@ -1010,6 +1010,7 @@ def titleScreen():
         gameDisplay.blit(logo, rect)
 
         # Draw buttons
+        # NOTE: Change action to test out selection screen
         button('Start Game',300,450,200,50,darkGreen,green,white,gameLoop)
         button('Quit',300,520,200,50,red,brightRed,white,quitGame)
         button('View Stats',610,30,150,50,waterBlue,iceBlue,black, statsScreen)
