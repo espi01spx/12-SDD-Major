@@ -5,23 +5,36 @@ from pygame.locals import *
 from time import sleep
 
 def textObjects(text, font, textColour):
+    '''Handles the rendering of text fonts.
+
+    text -- to be drawn onto the screen
+    font -- of the text
+    textColour -- colour of text
+    '''
     textSurface = font.render(text, True, textColour)
     return textSurface, textSurface.get_rect()
 
 def messageDisplay(text, size):
+    '''Displays a large message onto the center of the screen.
+    NOTE: Not currently used in this version of Pius Mon.
+
+    text -- to be drawn onto the screen
+    size -- text size
+    '''
     largeText = pygame.font.SysFont('segoeui', size)
     TextSurf, TextRect = textObjects(text, largeText, cfg.black)
     TextRect.center = ((cfg.displayWidth/2),((cfg.displayHeight/2))-50)
     cfg.gameDisplay.blit(TextSurf, TextRect)
 
 def button(msg,x,y,w,h,ic,ac,tc,action=None):
-    '''
-    msg = button label
-    x,y = top-left coordinates of the button box
-    w,h = button width/height
-    ic,ac = inactive colour, active colour (on mouse hover)
-    tc = text colour
-    action = function to trigger on button click
+    '''Draws a button onto the screen.
+
+    msg -- button label
+    x,y -- top-left coordinates of the button box
+    w,h -- button width/height
+    ic,ac -- inactive colour, active colour (on mouse hover)
+    tc -- text colour
+    action -- function to trigger on button click (optional)
     '''
 
     mouse = pygame.mouse.get_pos()
@@ -51,7 +64,11 @@ def button(msg,x,y,w,h,ic,ac,tc,action=None):
     cfg.gameDisplay.blit(textSurf, textRect)
 
 def messageBox(line1, line2):
-    # Draws a message box
+    '''Draws a message box
+
+    line1 -- first line of message
+    line2 -- second line
+    '''
     pygame.draw.rect(cfg.gameDisplay, cfg.forestBlue, (0, 486, cfg.displayWidth, 114))
     pygame.draw.rect(cfg.gameDisplay, cfg.white, (0, 486, cfg.displayWidth, 114), 1)
 
@@ -70,8 +87,10 @@ def messageBox(line1, line2):
     pygame.display.update()
 
 def movePrompt(line1):
-    # Basically the same as drawMessageBox
-    # Prompts the user to Attack or Swap
+    '''Prompts the user to Attack or Swap. Similar to the drawMessageBox function
+
+    line1 -- first line of message
+    '''
 
     pygame.draw.rect(cfg.gameDisplay, cfg.forestBlue, (0, 486, cfg.displayWidth, 114))
     pygame.draw.rect(cfg.gameDisplay, cfg.white, (0, 486, cfg.displayWidth, 114), 1)
@@ -84,7 +103,12 @@ def movePrompt(line1):
 
 
 def healthBar(player):
+    '''Draws a player's health bar.
+
+    player -- 1 (human) or 2 (AI)
+    '''
     # x,y = top-left coordinates of the HP bar's background
+
     healthBarWidth = 200
 
     if player == 1:
@@ -140,17 +164,29 @@ def healthBar(player):
     cfg.gameDisplay.blit(textSurf, textRect)
 
 def pointer(player):
-    # Pointers to be attatched to end of health bar
+    '''Draws a Pointer to be attatched to the end of a health bar
+
+    player -- 1 (human) or 2 (AI)
+    '''
     if player == 2:
         pygame.draw.polygon(cfg.gameDisplay, cfg.cream, ((256,16), (256,98), (280,58)), 0)
     else:
         pygame.draw.polygon(cfg.gameDisplay, cfg.cream, ((542,364), (542,448), (520,406)), 0)
 
 def arrowPrompt():
+    '''Draws an arrow that prompts the player to click through the dialogue.
+
+    No paramaters.
+    '''
     pygame.draw.polygon(cfg.gameDisplay, cfg.yellow, ((754, 562), (780, 562), (767, 584)), 0)
     pygame.display.update()
 
 def platform(player):
+    '''Draws a platform underneath the player's Mon. Its colour is based on the Mon's type.
+
+    player -- 1 (human) or 2 (AI)
+    '''
+
     # Define colour based on monType
     if player == 1:
         monType = cfg.p1Primary['Type']
@@ -171,6 +207,11 @@ def platform(player):
         pygame.draw.ellipse(cfg.gameDisplay, colour, (530,200,300,100),0)
 
 def character(state, player):
+    '''Draws a character onto the screen.
+
+    state -- "attack", "hit" or "normal"
+    player -- 1 (human) or 2 (AI)
+    '''
     # Determine mon's name
     if player == 1:
         mon = cfg.p1Primary['Name']
@@ -243,7 +284,11 @@ def character(state, player):
                 cfg.gameDisplay.blit(cfg.DrogonNormal, rect)
 
 def resetGameDisplay():
-    # Excludes character sprites and message box
+    '''Draws the game background, as well as both platforms and health bars.
+    Does NOT draw character sprites or the message box.
+
+    No paramters.
+    '''
     cfg.gameDisplay.fill(cfg.white)
     cfg.gameDisplay.blit(cfg.gameBackground, (0,0))
     platform(1)
@@ -252,10 +297,12 @@ def resetGameDisplay():
     healthBar(2)
 
 def pausePrompt(waitTime):
+    '''Usually called at the end of a dialogue.
+    The program sleeps for <waitTime> then prompts the user to click to advance the dialogue.
+
+    waitTime -- in milliseconds (ms)
+    (e.g. 2000 = 2 seconds)
     '''
-    wait time in milliseconds (ms)
-    '''
-    # Draws the arrow prompt and sleeps the program for a short time
     pygame.display.update()
 
     waitTime = waitTime / 1000

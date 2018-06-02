@@ -1,23 +1,10 @@
-# globalDefs.py
+# config.py
 import pygame
 from pygame.locals import *
 
 pygame.mixer.pre_init(44100, -16, 2, 512)
 pygame.mixer.init()
 pygame.init()
-
-##def init():
-##    global displayWidth, displayHeight, gameDisplay, gameIcon, clock
-##    global pokemonYellow, black, white, yellow, red, green, darkGreen, brightRed, brightGreen
-##    global blue, waterBlue, iceBlue, orange, lightGrey, cream, forestBlue
-##    global logo, titleBackground, gameBackground
-##    global SnowbroNormal, SnowbroAttack1, SnowbroAttack2, SnowbroHit
-##    global MegabiteNormal, MegabiteAttack, MegabiteHit
-##    global DrogonNormal, DrogonAttack, DrogonHit
-##    global TrainerEthan, Drogon, Snowbro, Megabite
-##    global p1Primary, p1Backup, p2Primary, p2Backup
-##    global moveTypes, moveBaseDmg
-##    global newStats, hitSFX, selectSFX
 
 # Display config
 displayWidth = 800

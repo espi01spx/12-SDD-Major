@@ -5,6 +5,11 @@ from pygame.locals import *
 from time import sleep
 
 def resultsScreen(win):
+    '''Displays game results screen.
+    This function passes on to winScreen() or loseScreen() based on game outcome.
+
+    win -- boolean; whether or not the human player won the game
+    '''
     # Write stats to file
     stats = statHandler.readStats()
     statHandler.writeStats(stats, win)
@@ -18,6 +23,10 @@ def resultsScreen(win):
         loseScreen()
 
 def winScreen():
+    '''Displays the win screen.
+
+    No paramters.
+    '''
     inResultsScreen = True
     while inResultsScreen:
         for event in pygame.event.get():
@@ -50,6 +59,10 @@ def winScreen():
         cfg.clock.tick(30)
 
 def loseScreen():
+    '''Displays the lose screen.
+
+    No paramters.
+    '''
     inResultsScreen = True
     while inResultsScreen:
         for event in pygame.event.get():
@@ -82,6 +95,10 @@ def loseScreen():
         cfg.clock.tick(30)
 
 def titleScreen():
+    '''Displays the Pius Mon title screen.
+
+    No paramters.
+    '''
     print('running titleScreen')
     inTitleScreen = True
     while inTitleScreen:
@@ -112,6 +129,10 @@ def titleScreen():
         cfg.clock.tick(30)
 
 def statsScreen():
+    '''Displays the stats (statistics) screen.
+
+    No paramters.
+    '''
     print('running statsScreen')
     stats = statHandler.readStats()
 
@@ -160,6 +181,11 @@ def statsScreen():
         cfg.clock.tick(30)
 
 def gameIntro(trainerName):
+    '''Displays the game intro scene.
+    This scene introduces the opponent and the two Mon who will be fighting.
+
+    trainerName -- nickname of the human player
+    '''
     print('running gameIntro')
 
     inIntro = True
@@ -219,8 +245,13 @@ def gameIntro(trainerName):
 
 
 def gameLoop():
+    '''This scene comprises the main Pius Mon game flow.
+
+    No paramters.
+    '''
+
     print('running gameLoop')
-    # timesSwapped moved to config.py
+    # timesSwapped variable moved to config.py
 
     # Music
     pygame.mixer.music.load('Sounds\BattleMusic.mp3')

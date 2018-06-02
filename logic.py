@@ -5,18 +5,19 @@ from pygame.locals import *
 from time import sleep
 
 def quitGame():
-    # Called when the Close button is clicked
+    '''Called when the Close button is clicked. (Window bar or in-game)
+    '''
     print('quitGame')
     pygame.quit()
     sys.exit()
 
 def swapMon(player):
-    '''
-    Player = 1 or 2
+    '''Swaps the player's primary and secondary Mon.
+
+    player -- 1 (human) or 2 (AI)
     '''
     # Swap Mon by swapping the dictionaries
     print('swapping...')
-    ##global p1Primary, p1Backup, p2Primary, p2Backup
 
     if player == 1:
         temp = copy.deepcopy(cfg.p1Primary)
@@ -39,7 +40,7 @@ def swapMon(player):
 
 def playerMove(action, player):
     '''
-    action = A1/A2/A3 (attack) OR S (for swap)
+    action = A1/A2/A3 (attack) or S (for swap)
     player = 1 or 2
     '''
     # Called when player 1 OR player 2 moves
@@ -204,19 +205,25 @@ def playerMove(action, player):
 
 def playerAttacks(move, player):
     if player == 1:
-        # Inflicting damage to player 2
+        # Inflicting damage to player 2's primary Mon
         damage, powerMsg = calculateDamage(cfg.p1Primary['ATK'], cfg.moveTypes[move], cfg.p1Primary['Type'], cfg.moveBaseDmg[move], cfg.p2Primary['Type'])
         pygame.mixer.Sound.play(cfg.hitSFX)
+
+        # Mon's HP must never dip below zero
         if cfg.p2Primary['CurrentHP'] < damage:
             cfg.p2Primary['CurrentHP'] = 0
-            cfg.newStats['Damage'] += damage # Add damage to stats
+
+            # Add damage to stats
+            cfg.newStats['Damage'] += damage
             fainted = checkIfFainted()
         else:
             cfg.p2Primary['CurrentHP'] = cfg.p2Primary['CurrentHP'] - damage
-            cfg.newStats['Damage'] += damage # Add damage to stats
+
+            # Add damage to stats
+            cfg.newStats['Damage'] += damage
             fainted = checkIfFainted()
     else:
-        # Inflicting damage to player 1
+        # Inflicting damage to player 1's primary Mon
         damage, powerMsg = calculateDamage(cfg.p2Primary['ATK'], cfg.moveTypes[move], cfg.p2Primary['Type'], cfg.moveBaseDmg[move], cfg.p1Primary['Type'])
         pygame.mixer.Sound.play(cfg.hitSFX)
         if cfg.p1Primary['CurrentHP'] < damage:
@@ -231,7 +238,18 @@ def playerAttacks(move, player):
 
 
 def calculateDamage(AtkStat, moveType, monType, baseDamage, oppType):
-    print('running calculateDamage')
+    '''Calculates the amount of damage that one Mon will inflict on the opposing Mon.
+    Returns damage and powerMsg (super effective, not very effective, etc.)
+
+    The following parameters relate to the Attacking Mon:
+        AtkStat -- their attack stat
+        moveType -- the move's type
+        monType -- their type/element
+        baseDamage -- the move's base damage
+
+    The following parameter relates to the Defending Mon:
+        oppType -- their type/element
+    '''
 
     damage = baseDamage * (AtkStat * 0.02)
 
@@ -278,7 +296,7 @@ def checkIfFainted():
 
         # Perform swap if fainted
         draw.resetGameDisplay()
-        draw.character('normal', 1)
+        draw.character('hit', 1)
         draw.character('normal', 2)
         draw.messageBox(cfg.p1Primary['Name'] + ' fainted!', '')
         draw.pausePrompt(200)
@@ -327,7 +345,7 @@ def checkIfFainted():
 
         draw.resetGameDisplay()
         draw.character('normal', 1)
-        draw.character('normal', 2)
+        draw.character('hit', 2)
         draw.messageBox(cfg.p2Primary['Name'] + ' fainted!', '')
         draw.pausePrompt(200)
 
@@ -384,7 +402,10 @@ def setMon(p1P_Pick, p1B_Pick, p2P_Pick, p2B_Pick):
     print('p2Backup:', cfg.p2Backup)
 
 def defineMoves():
-    # Returns the Mons' moves
+    '''Returns the moves of both players' Primary Mons
+
+    Return parameters: p1Move, p2Move
+    '''
     if cfg.p1Primary['Name'] == 'Megabite':
         p1Move = 'Sharp Teeth'
     elif cfg.p1Primary['Name'] == 'Snowbro':
@@ -401,7 +422,7 @@ def defineMoves():
     return p1Move, p2Move
 
 def initiateAttack():
-    # Called when player clicks Attack
+    '''Called when player clicks Attack'''
     p1Move, p2Move, = defineMoves()
 
     if cfg.p1Primary['SPD'] > cfg.p2Primary['SPD']:
@@ -432,9 +453,8 @@ def initiateAttack():
 
 
 def initiateSwap():
-    # Called when player clicks Swap
+    '''Called when player clicks Swap'''
 
-    ##global timesSwapped
     # If backup mon is fainted, Player cannot swap
     if cfg.p1Backup['CurrentHP'] == 0:
         draw.resetGameDisplay()
@@ -490,7 +510,7 @@ def initiateSwap():
     cfg.newStats['Turns'] += 1 # Add turn to stats
 
 def paused():
-    # Wait for user input (key press OR mouse click) to unpause game
+    '''When called, paused() waits for user input (key press OR mouse click) to resume the game'''
     pause = True
     while pause:
         for event in pygame.event.get():
@@ -506,11 +526,9 @@ def paused():
                 pause = False
 
 def resetGame():
-    print('resetGame')
+    '''Resets all global variables'''
+    print('called resetGame')
 
-    # Reset global variables
-
-    ##global p1Primary, p1Backup, p2Primary, p2Backup, newStats##, timesSwapped
     cfg.p1Primary = {}
     cfg.p1Backup = {}
     cfg.p2Primary = {}

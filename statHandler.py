@@ -5,7 +5,11 @@ from pygame.locals import *
 from time import sleep
 
 def readStats():
-    # Load stats from file "stats.txt" into dictionary "stats"
+    '''Loads stats from file "stats.txt" into dictionary "stats"
+
+    Return paramters:
+        stats -- dictionary containing retrieved stats
+    '''
     stats = {}
     f = open('stats.txt', 'r')
     for line in f:
@@ -17,6 +21,12 @@ def readStats():
     return stats
 
 def writeStats(stats, win):
+    '''Writes newStats into the file "stats.txt"
+    Usually called after the readStats() function
+
+    stats -- stats retrieved from readStats()
+    win -- boolean; whether or not the human player won the game.
+    '''
     print('newStats =', cfg.newStats)
     print('stats =',stats)
     if cfg.newStats['Turns'] < stats['Fastest Game']:
