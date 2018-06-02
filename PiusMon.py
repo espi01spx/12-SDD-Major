@@ -427,7 +427,6 @@ def playerMove(action, player):
             healthBar(2)
 
             pygame.display.update()
-            ##pygame.time.delay(600)
             sleep(0.6)
 
             drawMessageBox('Go, ' + p1Primary['Name'] + '!', '')
@@ -437,7 +436,6 @@ def playerMove(action, player):
             drawCharacter('normal', 1)
             drawCharacter('normal', 2)
             pygame.display.update()
-            ##pygame.time.delay(400)
             sleep(0.2)
 
     else:
@@ -623,7 +621,6 @@ def checkIfFainted():
             healthBar(2)
 
             pygame.display.update()
-            ##pygame.time.delay(600)
             sleep(0.6)
 
             drawMessageBox('Go, ' + p1Primary['Name'] + '!', '')
@@ -633,7 +630,6 @@ def checkIfFainted():
             drawCharacter('normal', 1)
             drawCharacter('normal', 2)
             pygame.display.update()
-            ##pygame.time.delay(400)
             sleep(0.2)
 
     elif p2Primary['CurrentHP'] <= 0:
@@ -673,7 +669,6 @@ def checkIfFainted():
             healthBar(1)
 
             pygame.display.update()
-            ##pygame.time.delay(600)
             sleep(0.6)
 
             drawMessageBox('Trainer Ethan brought out ' + p2Primary['Name'] + '!', '')
@@ -683,7 +678,6 @@ def checkIfFainted():
             drawCharacter('normal', 1)
             drawCharacter('normal', 2)
             pygame.display.update()
-            ##pygame.time.delay(400)
             sleep(0.2)
 
     return fainted
@@ -705,7 +699,6 @@ def pausePrompt(waitTime):
     waitTime = waitTime / 1000
     sleep(waitTime)
 
-    ##pygame.time.delay(waitTime)
     drawArrowPrompt()
     paused()
 
