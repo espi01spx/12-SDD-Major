@@ -1,4 +1,3 @@
-# config.py
 import pygame
 from pygame.locals import *
 
@@ -15,7 +14,6 @@ gameIcon = pygame.image.load('Images\Icon.PNG')
 pygame.display.set_icon(gameIcon)
 
 # Animation config
-##FPS = 30
 clock = pygame.time.Clock()
 
 # Preset colours

@@ -1,13 +1,11 @@
-# main.py
-
-# The config module contains all of the global variables used in the program.
+# Config module -- contains all global variables
 import config as cfg
 
-# Importing all other modules
+# Imports all Pius Mon modules
 import draw, logic, screens, statHandler
 
 
-# ------------ MAINLINE -------------- #
+# -------------------- MAINLINE -------------------- #
 
 screens.titleScreen()
 logic.quitGame()

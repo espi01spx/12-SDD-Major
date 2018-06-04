@@ -1,6 +1,5 @@
-# draw.py
 import logic, screens, statHandler, config as cfg
-import pygame, sys, math, copy, random
+import pygame
 from pygame.locals import *
 from time import sleep
 
@@ -91,7 +90,6 @@ def movePrompt(line1):
 
     line1 -- first line of message
     '''
-
     pygame.draw.rect(cfg.gameDisplay, cfg.forestBlue, (0, 486, cfg.displayWidth, 114))
     pygame.draw.rect(cfg.gameDisplay, cfg.white, (0, 486, cfg.displayWidth, 114), 1)
 
@@ -108,7 +106,6 @@ def healthBar(player):
     player -- 1 (human) or 2 (AI)
     '''
     # x,y = top-left coordinates of the HP bar's background
-
     healthBarWidth = 200
 
     if player == 1:
@@ -174,10 +171,7 @@ def pointer(player):
         pygame.draw.polygon(cfg.gameDisplay, cfg.cream, ((542,364), (542,448), (520,406)), 0)
 
 def arrowPrompt():
-    '''Draws an arrow that prompts the player to click through the dialogue.
-
-    No paramaters.
-    '''
+    '''Draws an arrow that prompts the player to click through the dialogue.'''
     pygame.draw.polygon(cfg.gameDisplay, cfg.yellow, ((754, 562), (780, 562), (767, 584)), 0)
     pygame.display.update()
 
@@ -186,7 +180,6 @@ def platform(player):
 
     player -- 1 (human) or 2 (AI)
     '''
-
     # Define colour based on monType
     if player == 1:
         monType = cfg.p1Primary['Type']
@@ -286,8 +279,6 @@ def character(state, player):
 def resetGameDisplay():
     '''Draws the game background, as well as both platforms and health bars.
     Does NOT draw character sprites or the message box.
-
-    No paramters.
     '''
     cfg.gameDisplay.fill(cfg.white)
     cfg.gameDisplay.blit(cfg.gameBackground, (0,0))
@@ -310,3 +301,11 @@ def pausePrompt(waitTime):
 
     arrowPrompt()
     logic.paused()
+
+def shadedSurface():
+    '''Creates a translucent surface.
+    Useful when drawn under message windows, etc.
+    '''
+    s = pygame.Surface((cfg.displayWidth, cfg.displayHeight), pygame.SRCALPHA)
+    s.fill((255, 255, 255, 128))
+    cfg.gameDisplay.blit(s, (0,0))

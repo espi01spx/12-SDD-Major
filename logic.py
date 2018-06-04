@@ -1,12 +1,10 @@
-# logic.py
 import draw, screens, statHandler, config as cfg
 import pygame, sys, math, copy, random
 from pygame.locals import *
 from time import sleep
 
 def quitGame():
-    '''Called when the Close button is clicked. (Window bar or in-game)
-    '''
+    '''Called when the Close button is clicked. (Window bar or in-game)'''
     print('quitGame')
     pygame.quit()
     sys.exit()
@@ -39,9 +37,10 @@ def swapMon(player):
     print('swap complete')
 
 def playerMove(action, player):
-    '''
-    action = A1/A2/A3 (attack) or S (for swap)
-    player = 1 or 2
+    '''Called when a Mon (on either team) makes a move.
+
+    action -- A1/A2/A3 (attack) or S (for swap)
+    player -- 1 (human) or 2 (AI)
     '''
     # Called when player 1 OR player 2 moves
     if player == 1:
@@ -189,7 +188,6 @@ def playerMove(action, player):
             draw.healthBar(1)
 
             pygame.display.update()
-            ##pygame.time.delay(600)
             sleep(0.6)
 
             draw.messageBox('Trainer Ethan sent out ' + cfg.p2Primary['Name'] + '!', '')
@@ -199,11 +197,16 @@ def playerMove(action, player):
             draw.character('normal', 1)
             draw.character('normal', 2)
             pygame.display.update()
-            ##pygame.time.delay(400)
             sleep(0.2)
 
 
 def playerAttacks(move, player):
+    '''Called when a Mon (on either team) attacks.
+    Parent function: playerMove()
+
+    action -- A1/A2/A3 (attack) or S (for swap)
+    player -- 1 (human) or 2 (AI)
+    '''
     if player == 1:
         # Inflicting damage to player 2's primary Mon
         damage, powerMsg = calculateDamage(cfg.p1Primary['ATK'], cfg.moveTypes[move], cfg.p1Primary['Type'], cfg.moveBaseDmg[move], cfg.p2Primary['Type'])
@@ -289,8 +292,13 @@ def calculateDamage(AtkStat, moveType, monType, baseDamage, oppType):
     return damage, powerMsg
 
 def checkIfFainted():
+    '''Checks if a player's primary Mon is fainted.
+
+    Return parameter:
+        fainted -- boolean
+    '''
     fainted = False
-    if cfg.p1Primary['CurrentHP'] == 0:
+    if cfg.p1Primary['CurrentHP'] <= 0:
         fainted = True
         print('p1 primary mon fainted')
 
@@ -349,7 +357,7 @@ def checkIfFainted():
         draw.messageBox(cfg.p2Primary['Name'] + ' fainted!', '')
         draw.pausePrompt(200)
 
-        if cfg.p2Backup['CurrentHP'] == 0:
+        if cfg.p2Backup['CurrentHP'] <= 0:
             # Player wins
             print('p1 wins')
             win = True
@@ -388,8 +396,16 @@ def checkIfFainted():
     return fainted
 
 def setMon(p1P_Pick, p1B_Pick, p2P_Pick, p2B_Pick):
+    '''Set both players' Mon based on their selections
+
+    Player 1 picks:
+        p1P_Pick, p1B_Pick
+
+    Player 2 picks:
+        p2P_Pick, p2B_Pick
+    '''
+
     # Copy dictionaries
-    ##global p1Primary, p2Primary, p1Backup, p2Backup
     cfg.p1Primary = copy.deepcopy(cfg.Megabite)
     cfg.p1Backup = copy.deepcopy(cfg.Drogon)
     cfg.p2Primary = copy.deepcopy(cfg.Snowbro)
@@ -463,7 +479,7 @@ def initiateSwap():
         draw.messageBox("You can't swap right now!", "Your backup Mon is already fainted.")
         draw.pausePrompt(200)
         return
-        ##continue
+
     # If player has used all three swaps, Player cannot swap
     elif cfg.timesSwapped >= 3:
         draw.resetGameDisplay()
@@ -472,7 +488,7 @@ def initiateSwap():
         draw.messageBox("You can't swap right now!", "You have used all three of your swaps.")
         draw.pausePrompt(200)
         return
-        ##continue
+
 
     p1Move, p2Move, = defineMoves()
 
@@ -507,7 +523,9 @@ def initiateSwap():
             cfg.timesSwapped += 1
 
     print('Times swapped:', cfg.timesSwapped)
-    cfg.newStats['Turns'] += 1 # Add turn to stats
+
+    # Add turn to stats
+    cfg.newStats['Turns'] += 1
 
 def paused():
     '''When called, paused() waits for user input (key press OR mouse click) to resume the game'''
@@ -538,3 +556,21 @@ def resetGame():
 
     print('newStats:', cfg.newStats)
     screens.titleScreen()
+
+def winRatio(wins, total):
+    '''Calculates a player's win ratio based on their stats
+
+    wins -- total number of wins
+    total -- total number of games the player has completed, win or lose
+
+    Return parameters:
+        ratio -- in string format
+    '''
+    ratio = wins / total
+
+    # Convert ratio to percentage
+    ratio = ratio * 100
+    ratio = round(ratio, 1)
+
+    # Return ratio as string format
+    return str(ratio)

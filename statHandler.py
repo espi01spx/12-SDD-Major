@@ -1,11 +1,10 @@
-# statHandler.py
 import config as cfg
-import pygame, sys, math, copy, random
-from pygame.locals import *
-from time import sleep
+import json
 
 def readStats():
-    '''Loads stats from file "stats.txt" into dictionary "stats"
+    '''NOTE: Depreciated function.
+
+    Loads stats from file "stats.txt" into dictionary "stats"
 
     Return paramters:
         stats -- dictionary containing retrieved stats
@@ -21,7 +20,9 @@ def readStats():
     return stats
 
 def writeStats(stats, win):
-    '''Writes newStats into the file "stats.txt"
+    '''NOTE: Depreciated function.
+
+    Writes newStats into the file "stats.txt"
     Usually called after the readStats() function
 
     stats -- stats retrieved from readStats()
@@ -62,3 +63,71 @@ def writeStats(stats, win):
     else:
         f.write('Fastest Game: ' + str(stats['Fastest Game']))
     f.close()
+
+def readJson():
+    '''Loads stats from file "stats.json" into dictionary "stats"
+
+    Return paramters:
+        stats -- dictionary containing retrieved stats
+    '''
+    stats = {}
+    with open('stats.json', 'r') as f:
+        stats = json.load(f)
+
+    return stats
+
+def processStats(stats, win):
+    '''Increments stats, based on game outcome.
+    Called during the writeJson() function
+
+    stats -- stats retrieved from readStats()
+    win -- boolean; whether or not the human player won the game.
+
+    Return parameters:
+        stats -- processed stats dictionary
+    '''
+    if cfg.newStats['Turns'] < stats['FastestGame']:
+        print('New turn record!')
+        newRecord = True
+    else:
+        newRecord = False
+
+    # Modify "fastest game" attribute, only if new turn record
+    if newRecord:
+        stats['FastestGame'] = cfg.newStats['Turns']
+
+    # Add 1 to win counter, if player won the battle
+    if win:
+        print('Added 1 to win counter')
+        stats['BattlesWon'] += 1
+
+    # Increment other stats
+    stats['GamesPlayed'] += 1
+    stats['TotalDamage'] += cfg.newStats['Damage']
+    stats['TotalTurns'] += cfg.newStats['Turns']
+    return stats
+
+def writeJson(stats, win):
+    '''Writes newStats into the file "stats.json"
+    Usually called after the readJson() function
+
+    stats -- stats retrieved from readStats()
+    win -- boolean; whether or not the human player won the game.
+    '''
+    stats = processStats(stats, win)
+
+    with open('stats.json', 'w') as f:
+        json.dump(stats, f, indent=4)
+
+def resetJson():
+    '''Resets the game stats located in the file "stats.json"
+    Essentially rewrites all of the stats with 0 value
+    '''
+    data = {'BattlesWon': 0,
+            'GamesPlayed': 0,
+            'TotalDamage': 0,
+            'TotalTurns': 0,
+            'FastestGame': 999}
+
+    with open('stats.json', 'w') as f:
+        json.dump(data, f, indent=4)

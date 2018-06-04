@@ -1,6 +1,5 @@
-# screens.py
 import draw, logic, statHandler, config as cfg
-import pygame, sys, math, copy, random
+import pygame
 from pygame.locals import *
 from time import sleep
 
@@ -11,11 +10,12 @@ def resultsScreen(win):
     win -- boolean; whether or not the human player won the game
     '''
     # Write stats to file
-    stats = statHandler.readStats()
-    statHandler.writeStats(stats, win)
+    stats = statHandler.readJson()
+    statHandler.writeJson(stats, win)
     print('Stats written to file.')
 
-    pygame.mixer.music.fadeout(500) # Stop music
+    # Stop music playback
+    pygame.mixer.music.fadeout(500)
 
     if win:
         winScreen()
@@ -23,10 +23,7 @@ def resultsScreen(win):
         loseScreen()
 
 def winScreen():
-    '''Displays the win screen.
-
-    No paramters.
-    '''
+    '''Displays the win screen.'''
     inResultsScreen = True
     while inResultsScreen:
         for event in pygame.event.get():
@@ -59,10 +56,7 @@ def winScreen():
         cfg.clock.tick(30)
 
 def loseScreen():
-    '''Displays the lose screen.
-
-    No paramters.
-    '''
+    '''Displays the lose screen.'''
     inResultsScreen = True
     while inResultsScreen:
         for event in pygame.event.get():
@@ -95,11 +89,7 @@ def loseScreen():
         cfg.clock.tick(30)
 
 def titleScreen():
-    '''Displays the Pius Mon title screen.
-
-    No paramters.
-    '''
-    print('running titleScreen')
+    '''Displays the Pius Mon title screen.'''
     inTitleScreen = True
     while inTitleScreen:
         for event in pygame.event.get():
@@ -129,12 +119,9 @@ def titleScreen():
         cfg.clock.tick(30)
 
 def statsScreen():
-    '''Displays the stats (statistics) screen.
-
-    No paramters.
-    '''
-    print('running statsScreen')
-    stats = statHandler.readStats()
+    '''Displays the stats screen.'''
+    stats = statHandler.readJson()
+    winRatio = logic.winRatio(stats['BattlesWon'], stats['GamesPlayed'])
 
     inStatsScreen = True
     while inStatsScreen:
@@ -147,35 +134,91 @@ def statsScreen():
 
         # Draw heading
         text = pygame.font.SysFont('segoeui', 60, bold=True)
-        textSurf, textRect = draw.textObjects('Statistics', text, cfg.black)
+        textSurf, textRect = draw.textObjects('Career Stats', text, cfg.black)
         textRect.center = ((cfg.displayWidth/2, 60))
         cfg.gameDisplay.blit(textSurf, textRect)
 
         # Draw stat text
         text = pygame.font.SysFont('segoeui', 25, bold=True)
 
-        textSurf, textRect = draw.textObjects('Battles won: ' + str(stats['Battles Won']), text, cfg.black)
-        textRect.topleft = ((25, 140))
+        textSurf, textRect = draw.textObjects('Battles won: ' + str(stats['BattlesWon']), text, cfg.black)
+        textRect.topleft = ((40, 140))
         cfg.gameDisplay.blit(textSurf, textRect)
 
-        textSurf, textRect = draw.textObjects('Games played: ' + str(stats['Games Played']), text, cfg.black)
-        textRect.topleft = ((25, 180))
+        textSurf, textRect = draw.textObjects('Games played: ' + str(stats['GamesPlayed']), text, cfg.black)
+        textRect.topleft = ((40, 180))
         cfg.gameDisplay.blit(textSurf, textRect)
 
-        textSurf, textRect = draw.textObjects('Total damage: ' + str(stats['Total Damage']), text, cfg.black)
-        textRect.topleft = ((25, 220))
+        textSurf, textRect = draw.textObjects('Win ratio: ' + str(winRatio) + '%', text, cfg.black)
+        textRect.topleft = ((40, 220))
         cfg.gameDisplay.blit(textSurf, textRect)
 
-        textSurf, textRect = draw.textObjects('Total turns: ' + str(stats['Total Turns']), text, cfg.black)
-        textRect.topleft = ((25, 260))
+        textSurf, textRect = draw.textObjects('Total damage: ' + str(stats['TotalDamage']), text, cfg.black)
+        textRect.topleft = ((40, 260))
         cfg.gameDisplay.blit(textSurf, textRect)
 
-        textSurf, textRect = draw.textObjects('Fastest game: ' + str(stats['Fastest Game']) + ' turns', text, cfg.black)
-        textRect.topleft = ((25, 300))
+        textSurf, textRect = draw.textObjects('Total turns: ' + str(stats['TotalTurns']), text, cfg.black)
+        textRect.topleft = ((40, 300))
+        cfg.gameDisplay.blit(textSurf, textRect)
+
+        textSurf, textRect = draw.textObjects('Fastest game: ' + str(stats['FastestGame']) + ' turns', text, cfg.black)
+        textRect.topleft = ((40, 340))
         cfg.gameDisplay.blit(textSurf, textRect)
 
         # Draw back button
-        draw.button('Main Menu',610,520,150,50, cfg.waterBlue, cfg.iceBlue, cfg.black, titleScreen)
+        draw.button('Main Menu', 560,520,200,50, cfg.waterBlue, cfg.iceBlue, cfg.black, titleScreen)
+        draw.button('Reset Stats', 40,520,150,50, cfg.red, cfg.brightRed, cfg.white, confirmStatReset)
+
+        pygame.display.update()
+        cfg.clock.tick(30)
+
+def confirmStatReset():
+    '''Confirmation screen for resetting player stats.'''
+    cfg.gameDisplay.fill(cfg.white)
+    cfg.gameDisplay.blit(cfg.titleBackground, (0,0))
+    draw.shadedSurface()
+    pygame.draw.rect(cfg.gameDisplay, cfg.black,(50,50,700,500),2)
+
+    text = pygame.font.SysFont('segoeui', 25, bold=True)
+    textSurf, textRect = draw.textObjects('Are you sure you want to erase your career statistics?', text, cfg.black)
+    textRect.center = ((cfg.displayWidth/2, 200))
+    cfg.gameDisplay.blit(textSurf, textRect)
+
+    textSurf, textRect = draw.textObjects('This action can not be undone.', text, cfg.black)
+    textRect.center = ((cfg.displayWidth/2, 240))
+    cfg.gameDisplay.blit(textSurf, textRect)
+    pygame.display.update()
+    sleep(1.5)
+
+    pygame.draw.rect(cfg.gameDisplay, cfg.brightRed,(50,50,700,500),2)
+    pygame.display.update()
+    sleep(1.5)
+
+    inScreen = True
+    while inScreen:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                logic.quitGame()
+
+        cfg.gameDisplay.fill(cfg.white)
+        cfg.gameDisplay.blit(cfg.titleBackground, (0,0))
+        draw.shadedSurface()
+        pygame.draw.rect(cfg.gameDisplay, cfg.brightRed,(50,50,700,500),2)
+
+        text = pygame.font.SysFont('segoeui', 25, bold=True)
+        textSurf, textRect = draw.textObjects('Are you sure you want to erase your career statistics?', text, cfg.black)
+        textRect.center = ((cfg.displayWidth/2, 200))
+        cfg.gameDisplay.blit(textSurf, textRect)
+
+        textSurf, textRect = draw.textObjects('This action can not be undone.', text, cfg.black)
+        textRect.center = ((cfg.displayWidth/2, 240))
+        cfg.gameDisplay.blit(textSurf, textRect)
+
+        # Button resets stats
+        draw.button('Erase Stats', 100,450,150,50, cfg.red, cfg.brightRed, cfg.white, statHandler.resetJson)
+
+        # Button to cancel
+        draw.button('Cancel', 500,450,200,50, cfg.waterBlue, cfg.iceBlue, cfg.black, statsScreen)
 
         pygame.display.update()
         cfg.clock.tick(30)
@@ -186,8 +229,6 @@ def gameIntro(trainerName):
 
     trainerName -- nickname of the human player
     '''
-    print('running gameIntro')
-
     inIntro = True
     while inIntro:
         for event in pygame.event.get():
@@ -245,12 +286,7 @@ def gameIntro(trainerName):
 
 
 def gameLoop():
-    '''This scene comprises the main Pius Mon game flow.
-
-    No paramters.
-    '''
-
-    print('running gameLoop')
+    '''This scene comprises the main Pius Mon game flow.'''
     # timesSwapped variable moved to config.py
 
     # Music
