@@ -395,21 +395,70 @@ def checkIfFainted():
 
     return fainted
 
-def setMon(p1P_Pick, p1B_Pick, p2P_Pick, p2B_Pick):
-    '''Set both players' Mon based on their selections
+def setOneMon(name, pick):
+    '''Selects a Mon as player 1's pick.
 
-    Player 1 picks:
-        p1P_Pick, p1B_Pick
-
-    Player 2 picks:
-        p2P_Pick, p2B_Pick
+    name -- of the selected Mon
+    pick -- 1 (Primary) OR 2 (Backup)
     '''
+    if name == 'None':
+        if pick == 1:
+            cfg.primaryPick = 'Snowbro'
+        else:
+            cfg.backupPick = 'Snowbro'
+        return
 
-    # Copy dictionaries
-    cfg.p1Primary = copy.deepcopy(cfg.Megabite)
-    cfg.p1Backup = copy.deepcopy(cfg.Drogon)
-    cfg.p2Primary = copy.deepcopy(cfg.Snowbro)
-    cfg.p2Backup = copy.deepcopy(cfg.Megabite)
+    if pick == 1:
+        cfg.primaryPick = name
+    else:
+        cfg.backupPick = name
+
+def setMon(p1P_Pick, p1B_Pick):
+    '''Set player 1's Pius Mon based on their selections.
+    Also randomly picks player 2's Mon within this function.
+
+    p1P_Pick -- player 1's primary Mon pick
+    p1B_Pick -- player 2's backup Mon pick
+    '''
+    # Copy dictionaries for player 1
+    if p1P_Pick == 'Snowbro':
+        cfg.p1Primary = copy.deepcopy(cfg.Snowbro)
+    elif p1P_Pick == 'Megabite':
+        cfg.p1Primary = copy.deepcopy(cfg.Megabite)
+    elif p1P_Pick == 'Drogon':
+        cfg.p1Primary = copy.deepcopy(cfg.Drogon)
+
+    if p1B_Pick == 'Snowbro':
+        cfg.p1Backup = copy.deepcopy(cfg.Snowbro)
+    elif p1B_Pick == 'Megabite':
+        cfg.p1Backup = copy.deepcopy(cfg.Megabite)
+    elif p1B_Pick == 'Drogon':
+        cfg.p1Backup = copy.deepcopy(cfg.Drogon)
+
+    # Choose random Mon for player 2
+    p2P_Pick = random.randint(1, cfg.monRange)
+
+    # Copy dictionaries for player 2
+    if p2P_Pick == 1:
+        cfg.p2Primary = copy.deepcopy(cfg.Snowbro)
+    elif p2P_Pick == 2:
+        cfg.p2Primary = copy.deepcopy(cfg.Megabite)
+    elif p2P_Pick == 3:
+        cfg.p2Primary = copy.deepcopy(cfg.Drogon)
+
+    while True:
+        p2B_Pick = random.randint(1, cfg.monRange)
+        if p2B_Pick == p2P_Pick:
+            continue
+        else:
+            break
+
+    if p2B_Pick == 1:
+        cfg.p2Backup = copy.deepcopy(cfg.Snowbro)
+    elif p2B_Pick == 2:
+        cfg.p2Backup = copy.deepcopy(cfg.Megabite)
+    elif p2B_Pick == 3:
+        cfg.p2Backup = copy.deepcopy(cfg.Drogon)
 
     # For debugging
     print('p1Primary:', cfg.p1Primary)

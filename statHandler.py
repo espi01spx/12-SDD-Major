@@ -16,7 +16,6 @@ def readStats():
         stats[line[0]] = int(line[1])
 
     f.close()
-    ##print('stats:',stats)
     return stats
 
 def writeStats(stats, win):

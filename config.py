@@ -18,6 +18,8 @@ clock = pygame.time.Clock()
 
 # Preset colours
 pokemonYellow = (255, 204, 0)
+##paleYellow = (252, 236, 156)
+paleYellow = (255, 244, 191)
 black = (0, 0, 0)
 white = (255, 255, 255)
 yellow = (255, 255, 0)
@@ -48,6 +50,8 @@ SnowbroAttack2 = pygame.image.load('Images\YetiAttack2.png')
 SnowbroAttack2 = pygame.transform.scale(SnowbroAttack2, (300,300))
 SnowbroHit = pygame.image.load('Images\YetiHit.png')
 SnowbroHit = pygame.transform.scale(SnowbroHit, (300, 300))
+SnowbroTmb = pygame.transform.scale(SnowbroAttack1, (100,100))
+SnowbroInfo = SnowbroAttack1.convert_alpha()
 
 MegabiteNormal = pygame.image.load('Images\Shark2Normal.png')
 MegabiteNormal = pygame.transform.scale(MegabiteNormal, (300, 300))
@@ -55,6 +59,8 @@ MegabiteAttack = pygame.image.load('Images\Shark2Attack.png')
 MegabiteAttack = pygame.transform.scale(MegabiteAttack, (300, 300))
 MegabiteHit = pygame.image.load('Images\Shark2Hit.png')
 MegabiteHit = pygame.transform.scale(MegabiteHit, (300,300))
+MegabiteTmb = pygame.transform.scale(MegabiteAttack, (100,100))
+MegabiteInfo = MegabiteAttack.convert_alpha()
 
 DrogonNormal = pygame.image.load('Images\DragonNormal.png')
 DrogonNormal = pygame.transform.scale(DrogonNormal, (300, 300))
@@ -62,6 +68,8 @@ DrogonAttack = pygame.image.load('Images\DragonAttack.png')
 DrogonAttack = pygame.transform.scale(DrogonAttack, (300, 300))
 DrogonHit = pygame.image.load('Images\DragonHit.png')
 DrogonHit = pygame.transform.scale(DrogonHit, (300,300))
+DrogonTmb = pygame.transform.scale(DrogonAttack, (100,100))
+DrogonInfo = DrogonAttack.convert_alpha()
 
 TrainerEthan = pygame.image.load('Images\TrainerEthan.png')
 
@@ -73,6 +81,8 @@ p1Primary = {}
 p1Backup = {}
 p2Primary = {}
 p2Backup = {}
+
+monRange = 3
 
 # Moves
 moveTypes = {'Sharp Teeth': 'W', 'Ice Shards': 'C', 'Fireball': 'F'}
@@ -87,3 +97,7 @@ selectSFX = pygame.mixer.Sound('Sounds\SelectSFX.wav')
 
 # Times swapped
 timesSwapped = 0
+
+# Player Mon picks
+primaryPick = ''
+backupPick = ''

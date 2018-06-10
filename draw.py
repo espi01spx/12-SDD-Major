@@ -13,6 +13,32 @@ def textObjects(text, font, textColour):
     textSurface = font.render(text, True, textColour)
     return textSurface, textSurface.get_rect()
 
+def drawText(msg, font, colour, pos, x, y):
+    '''Handles the drawing of text onto the screen. Does NOT update the screen.
+    The <font> must first be defined using pygame.font.SysFont(font, size, bold)
+
+    msg -- the text to be drawn
+    font -- the font, defined by the pygame.font.SysFont() function
+    colour -- font colour
+    pos -- center, topleft, topright, bottomleft, bottomright
+    x -- x-coordinate of pos
+    y -- y-coordinate of pos
+    '''
+    textSurf, textRect = textObjects(msg, font, colour)
+    if 'bottom' in pos:
+        if pos == 'bottomleft':
+            textRect.bottomleft = (x,y)
+        elif pos == 'bottomright':
+            textRect.bottomright = (x,y)
+    elif 'top' in pos:
+        if pos == 'topleft':
+            textRect.topleft = (x,y)
+        elif pos == 'topright':
+            textRect.topright = (x,y)
+    else:
+        textRect.center = (x,y)
+    cfg.gameDisplay.blit(textSurf, textRect)
+
 def messageDisplay(text, size):
     '''Displays a large message onto the center of the screen.
     NOTE: Not currently used in this version of Pius Mon.
@@ -275,6 +301,116 @@ def character(state, player):
                 cfg.gameDisplay.blit(cfg.DrogonNormalR, rect)
             else:
                 cfg.gameDisplay.blit(cfg.DrogonNormal, rect)
+
+def character2(name, x, y):
+    '''Draws a character onto the screen.
+    The character can be any available Mon in the game.
+
+    name -- of the character (string)
+    x -- top-left x-coordinate of draw position
+    y -- top-left y-coordinate of draw position
+    '''
+    rect = cfg.SnowbroAttack1.get_rect()
+    rect.topleft = (x,y)
+    if name == 'Snowbro':
+        cfg.gameDisplay.blit(cfg.SnowbroNormal, rect)
+    elif name == 'Megabite':
+        cfg.gameDisplay.blit(cfg.MegabiteNormal, rect)
+    elif name == 'Drogon':
+        cfg.gameDisplay.blit(cfg.DrogonNormal, rect)
+
+def thumbnail(name, x, y, pick):
+    '''Draws a character thumbnail, for use in the selection screen.
+
+    name -- of character to be displayed, in string form
+    x -- x-coordinate of top-left of thumbnail
+    y -- y-coordinate of top-left of thumbnail
+    pick -- 1 (primary pick) OR 2 (backup pick)
+    '''
+    rect = cfg.SnowbroTmb.get_rect()
+    rect.topleft = (x,y)
+
+    pygame.draw.rect(cfg.gameDisplay, cfg.paleYellow, (x,y,100,100))
+    pygame.draw.rect(cfg.gameDisplay, cfg.black, (x,y,100,100),1)
+
+    if name == 'Snowbro':
+        cfg.gameDisplay.blit(cfg.SnowbroTmb, rect)
+    elif name == 'Megabite':
+        cfg.gameDisplay.blit(cfg.MegabiteTmb, rect)
+    elif name == 'Drogon':
+        cfg.gameDisplay.blit(cfg.DrogonTmb, rect)
+
+    w,h = 100,100
+    mouse = pygame.mouse.get_pos()
+    click = pygame.mouse.get_pressed()
+    if x+w > mouse[0] > x and y+h > mouse[1] > y:
+        infoBox(name, x, y, pick)
+
+def infoBox(name, x, y, pick):
+    '''Draws an info box for any Mon in the game.
+    Used within function thumbnail()
+
+    name -- of character's info box to be displayed
+    x -- top-left x-coordinate of thumbnail button
+    y -- top-left y-coordinate of thumbnail button
+    '''
+    font = pygame.font.SysFont('segoeui', 25, bold=True)
+
+    # Draw rectangle
+    pygame.draw.rect(cfg.gameDisplay, cfg.paleYellow, (400,100,360,340))
+
+    # Mon name
+    drawText(name, font, cfg.black, 'topleft', 420, 110)
+
+    # Mon stats
+    font = pygame.font.SysFont('segoeui', 20, bold=True)
+
+    alpha = 128
+    s = pygame.Surface((cfg.displayWidth, cfg.displayHeight), pygame.SRCALPHA)
+    rect = cfg.SnowbroNormal.get_rect()
+    rect.topright = (750,100)
+
+    if name == 'Snowbro':
+        image = cfg.SnowbroInfo.copy()
+        image = pygame.transform.flip(image, True, False)
+        image.fill((255, 255, 255, alpha), None, pygame.BLEND_RGBA_MULT)
+        cfg.gameDisplay.blit(image, rect)
+
+        drawText('Cold Type', font, cfg.black, 'topleft', 420, 150)
+        drawText('HP ' + str(cfg.Snowbro['MaxHP']), font, cfg.black, 'topright', 516, 200)
+        drawText('ATK ' + str(cfg.Snowbro['ATK']), font, cfg.black, 'topright', 516, 230)
+        drawText('SPD ' + str(cfg.Snowbro['SPD']), font, cfg.black, 'topright', 516, 260)
+
+    elif name == 'Drogon':
+        image = cfg.DrogonInfo.copy()
+        image = pygame.transform.flip(image, True, False)
+        image.fill((255, 255, 255, alpha), None, pygame.BLEND_RGBA_MULT)
+        cfg.gameDisplay.blit(image, rect)
+
+        drawText('Fire Type', font, cfg.black, 'topleft', 420, 150)
+        drawText('HP ' + str(cfg.Drogon['MaxHP']), font, cfg.black, 'topright', 516, 200)
+        drawText('ATK ' + str(cfg.Drogon['ATK']), font, cfg.black, 'topright', 516, 230)
+        drawText('SPD ' + str(cfg.Drogon['SPD']), font, cfg.black, 'topright', 516, 260)
+
+    elif name == 'Megabite':
+        image = cfg.MegabiteInfo.copy()
+        image = pygame.transform.flip(image, True, False)
+        image.fill((255, 255, 255, alpha), None, pygame.BLEND_RGBA_MULT)
+        cfg.gameDisplay.blit(image, rect)
+
+        drawText('Water Type', font, cfg.black, 'topleft', 420, 150)
+        drawText('HP ' + str(cfg.Megabite['MaxHP']), font, cfg.black, 'topright', 516, 200)
+        drawText('ATK ' + str(cfg.Megabite['ATK']), font, cfg.black, 'topright', 516, 230)
+        drawText('SPD ' + str(cfg.Megabite['SPD']), font, cfg.black, 'topright', 516, 260)
+
+    click = pygame.mouse.get_pressed()
+    if click[0] == 1:
+            pygame.mixer.Sound.play(cfg.selectSFX)
+            logic.setOneMon(name, pick)
+            if pick == 1:
+                screens.selectionScreen2()
+            else:
+                screens.confirmSelection()
 
 def resetGameDisplay():
     '''Draws the game background, as well as both platforms and health bars.
